@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,34 +16,34 @@ import jp.ac.meijou.android.s221205140.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+    private PrefDataStore prefDataStore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         binding =ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        prefDataStore =PrefDataStore.getInstance(this);
+        prefDataStore.getString("name").ifPresent(name ->binding.text.setText(name));
+        binding.savebutton.setOnClickListener(view -> {
+            var text=binding.editTextText.getText().toString();
+            prefDataStore.setString("name",text);
+        });
 
         binding.button.setOnClickListener((View view) -> {
             var text=binding.editTextText.getText().toString();
+            binding.text.setText(text);
         });
 
-        binding.editTextText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        Log.d("Hirota","onCreate text: "+binding.editTextText);
 
-            }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                binding.text.setText(editable.toString());
-            }
-        });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        prefDataStore.getString("name").ifPresent(name ->binding.text.setText(name));
 
+    }
 }
