@@ -43,7 +43,7 @@ public class ConnectivityActivity extends AppCompatActivity {
                 transport="その他";
             }
 
-            binding.transportTitle.setText(transport);
+            binding.transportName.setText(transport);
         }
     }
 
